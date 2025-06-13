@@ -1,0 +1,88 @@
+/* Additional custom styles for the Task Scheduler */
+
+.task-scheduler {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Task node transitions */
+.task-node {
+  transition: all 0.3s ease-in-out;
+}
+
+.task-node:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Status indicators */
+.status-pending {
+  border-left: 4px solid #6b7280;
+}
+
+.status-running {
+  border-left: 4px solid #3b82f6;
+  animation: pulse 2s infinite;
+}
+
+.status-completed {
+  border-left: 4px solid #10b981;
+}
+
+.status-failed {
+  border-left: 4px solid #ef4444;
+}
+
+.status-retrying {
+  border-left: 4px solid #f59e0b;
+  animation: pulse 1.5s infinite;
+}
+
+/* Execution flow arrows */
+.execution-arrow {
+  color: #3b82f6;
+  font-size: 1.2em;
+  animation: slide 2s ease-in-out infinite;
+}
+
+@keyframes slide {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(4px);
+  }
+}
+
+/* Custom scrollbar */
+.task-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.task-grid::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 3px;
+}
+
+.task-grid::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.task-grid::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .task-scheduler {
+    padding: 1rem;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .task-grid {
+    grid-template-columns: 1fr;
+  }
+}
