@@ -38,6 +38,17 @@ class TaskScheduler {
   }
 
   /**
+   * Remove a task from the scheduler.
+   * @param {string} taskId - The ID of the task to remove.
+   */
+  removeTask(taskId) {
+    this.tasks.delete(taskId);
+    this.taskStates.delete(taskId);
+    this.retryCounts.delete(taskId);
+    this.skippedDueTo.delete(taskId);
+  }
+
+  /**
    * Get a valid execution order (topological sort).
    * Throws on circular dependencies.
    */
@@ -111,24 +122,28 @@ class TaskScheduler {
    * Execute a single task, retrying on failure up to maxRetries.
    */
   async executeTask(task) {
-    this.taskStates.set(task.id, 'running');
-    this.notifyStateChange(task.id, 'running');
-    try {
-      await this.simulateTaskExecution(task);
-      this.taskStates.set(task.id, 'completed');
-      this.notifyStateChange(task.id, 'completed');
-    } catch (error) {
-      const prevRetry = this.retryCounts.get(task.id) || 0;
-      const retryCount = Math.max(0, prevRetry + 1);
-      this.retryCounts.set(task.id, retryCount);
-      if (retryCount < this.maxRetries) {
-        this.taskStates.set(task.id, 'retrying');
-        this.notifyStateChange(task.id, 'retrying');
-        await this.executeTask(task);
-      } else {
-        this.taskStates.set(task.id, 'failed');
-        this.notifyStateChange(task.id, 'failed');
-        // Do not throw, just mark as failed and continue
+    let currentAttempt = 0; // 0 for initial attempt, then 1, 2, ... for retries
+    while (currentAttempt <= this.maxRetries) {
+      const stateBeforeExecution = currentAttempt === 0 ? 'running' : 'retrying';
+      this.taskStates.set(task.id, stateBeforeExecution);
+      this.notifyStateChange(task.id, stateBeforeExecution);
+
+      try {
+        await this.simulateTaskExecution(task);
+        this.taskStates.set(task.id, 'completed');
+        this.notifyStateChange(task.id, 'completed');
+        return; // Task completed successfully
+      } catch (error) {
+        currentAttempt++;
+        this.retryCounts.set(task.id, currentAttempt); // Store how many retries have been attempted
+
+        if (currentAttempt > this.maxRetries) { // No more retries left
+          this.taskStates.set(task.id, 'failed');
+          this.notifyStateChange(task.id, 'failed');
+          return; // Task failed after max retries
+        }
+        // If currentAttempt <= this.maxRetries, the loop will continue
+        // and set the state to 'retrying' at the beginning of the next iteration.
       }
     }
   }
@@ -162,7 +177,7 @@ class TaskScheduler {
    */
   getStats() {
     const stats = {
-      total: this.tasks.size,
+      total: 0, // Calculate total based on states found
       pending: 0,
       running: 0,
       completed: 0,
@@ -170,8 +185,17 @@ class TaskScheduler {
       retrying: 0,
       skipped: 0
     };
-    for (const state of this.taskStates.values()) {
-      if (stats[state] !== undefined) stats[state]++;
+
+    // Iterate over the canonical list of tasks
+    for (const taskId of this.tasks.keys()) {
+      let state = this.taskStates.get(taskId);
+
+      // If a task doesn't have a state, or has an invalid state, default to 'pending'
+      if (!state || stats[state] === undefined) {
+        state = 'pending';
+      }
+      stats[state]++;
+      stats.total++; // Increment total for each task successfully processed
     }
     return stats;
   }

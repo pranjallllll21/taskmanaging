@@ -1,4 +1,4 @@
-/* Additional custom styles for the Task Scheduler */
+/* Additional custom styles for the Task Scheduler with Dark/Light Theme */
 
 .task-scheduler {
   font-family: 'Inter', sans-serif;
@@ -14,7 +14,12 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Status indicators */
+/* Dark mode hover effect */
+.dark .task-node:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Status indicators - Light Mode */
 .status-pending {
   border-left: 4px solid #6b7280;
 }
@@ -37,11 +42,39 @@
   animation: pulse 1.5s infinite;
 }
 
+/* Status indicators - Dark Mode */
+.dark .status-pending {
+  border-left: 4px solid #9ca3af;
+}
+
+.dark .status-running {
+  border-left: 4px solid #60a5fa;
+  animation: pulse 2s infinite;
+}
+
+.dark .status-completed {
+  border-left: 4px solid #34d399;
+}
+
+.dark .status-failed {
+  border-left: 4px solid #f87171;
+}
+
+.dark .status-retrying {
+  border-left: 4px solid #fbbf24;
+  animation: pulse 1.5s infinite;
+}
+
 /* Execution flow arrows */
 .execution-arrow {
   color: #3b82f6;
   font-size: 1.2em;
   animation: slide 2s ease-in-out infinite;
+  transition: color 0.2s ease;
+}
+
+.dark .execution-arrow {
+  color: #60a5fa;
 }
 
 @keyframes slide {
@@ -53,7 +86,21 @@
   }
 }
 
-/* Custom scrollbar */
+/* Enhanced pulse animation for dark mode */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+.dark .animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Custom scrollbar - Light Mode */
 .task-grid::-webkit-scrollbar {
   width: 6px;
 }
@@ -72,6 +119,109 @@
   background: #94a3b8;
 }
 
+/* Custom scrollbar - Dark Mode */
+.dark .task-grid::-webkit-scrollbar-track {
+  background: #374151;
+}
+
+.dark .task-grid::-webkit-scrollbar-thumb {
+  background: #6b7280;
+}
+
+.dark .task-grid::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Theme transition for all elements */
+* {
+  transition: background-color 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+/* Enhanced button styles for dark mode */
+.dark button:disabled {
+  opacity: 0.4;
+}
+
+/* Custom focus styles for dark mode */
+.dark input:focus,
+.dark select:focus,
+.dark textarea:focus {
+  ring-color: #60a5fa;
+  border-color: #60a5fa;
+}
+
+/* Enhanced card shadows for dark mode */
+.dark .shadow-lg {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
+.dark .shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+}
+
+/* Theme toggle button special effects */
+.theme-toggle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+.theme-toggle:hover::before {
+  left: 100%;
+}
+
+/* Status badge enhancements */
+.status-badge {
+  position: relative;
+  overflow: hidden;
+}
+
+.status-badge::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { left: -100%; }
+  50% { left: 100%; }
+  100% { left: 100%; }
+}
+
+/* Glowing effect for running tasks */
+.status-running {
+  box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+}
+
+.dark .status-running {
+  box-shadow: 0 0 20px rgba(96, 165, 250, 0.4);
+}
+
+.status-retrying {
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+
+.dark .status-retrying {
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .task-scheduler {
@@ -85,4 +235,64 @@
   .task-grid {
     grid-template-columns: 1fr;
   }
+  
+  /* Mobile-specific dark mode adjustments */
+  .dark .shadow-lg {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  }
+}
+
+/* Animation for theme switching */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.3s ease-out;
+}
+
+/* Special dark mode text colors for better contrast */
+.dark .text-gray-600 {
+  color: #d1d5db;
+}
+
+.dark .text-gray-700 {
+  color: #e5e7eb;
+}
+
+.dark .text-gray-800 {
+  color: #f3f4f6;
+}
+
+.dark .text-gray-900 {
+  color: #ffffff;
+}
+
+/* Enhanced border styles for dark mode */
+.dark .border-gray-200 {
+  border-color: #4b5563;
+}
+
+.dark .border-gray-300 {
+  border-color: #6b7280;
+}
+
+/* Dark mode background variants */
+.dark .bg-gray-50 {
+  background-color: #111827;
+}
+
+.dark .bg-gray-100 {
+  background-color: #1f2937;
+}
+
+.dark .bg-gray-200 {
+  background-color: #374151;
 }

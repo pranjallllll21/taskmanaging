@@ -35,19 +35,9 @@ const useTaskScheduler = () => {
     });
 
     setStats(prev => {
-      const next = { ...prev };
-      // Decrement previous state count if task is transitioning from a state
-      const previousState = taskStates.get(taskId);
-      if (previousState && next[previousState] !== undefined) {
-        next[previousState]--;
-      }
-      // Increment new state count
-      if (next[state] !== undefined) {
-        next[state]++;
-      }
-      return next;
+      return scheduler.getStats();
     });
-  }, [taskStates]); // Added taskStates to dependencies to correctly decrement previous state
+  }, [scheduler]);
 
   const addTask = useCallback((taskData) => {
     const task = {
@@ -75,8 +65,7 @@ const useTaskScheduler = () => {
       setExecutionOrder(scheduler.getExecutionOrder());
       setExecutionError(null);
       setDeadlockDetected(false);
-      // Manually update stats for new task
-      setStats(prev => ({ ...prev, total: prev.total + 1, pending: prev.pending + 1 }));
+      setStats(scheduler.getStats());
 
     } catch (error) {
       setExecutionError(error.message);
@@ -87,7 +76,7 @@ const useTaskScheduler = () => {
     const taskToRemove = userTasks.find(t => t.id === taskId);
     if (!taskToRemove) return;
 
-    scheduler.tasks.delete(taskId);
+    scheduler.removeTask(taskId);
     setUserTasks(prev => prev.filter(task => task.id !== taskId));
 
     setTaskStates(prev => {
@@ -100,17 +89,7 @@ const useTaskScheduler = () => {
       next.delete(taskId);
       return next;
     });
-    // Manually update stats for removed task
-    setStats(prev => {
-      const next = { ...prev };
-      const previousState = taskStates.get(taskId);
-      if (previousState && next[previousState] !== undefined) {
-        next[previousState]--;
-      }
-      next.total--;
-      return next;
-    });
-
+    setStats(scheduler.getStats());
     setExecutionOrder(scheduler.getExecutionOrder());
     setExecutionError(null);
     setDeadlockDetected(false);
@@ -124,17 +103,11 @@ const useTaskScheduler = () => {
     setExecutionOrder([]);
     setExecutionError(null);
     setIsRunning(false);
-    setStats({
-      total: 0,
-      pending: 0,
-      running: 0,
-      completed: 0,
-      failed: 0,
-      retrying: 0,
-      skipped: 0
-    });
     setDeadlockDetected(false);
     setNextTaskId(1);
+
+    // After scheduler reset, fetch stats from scheduler to ensure UI is in sync
+    setStats(scheduler.getStats());
   }, [scheduler]);
 
   const execute = useCallback(async () => {
