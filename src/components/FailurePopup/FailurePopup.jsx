@@ -48,7 +48,6 @@ const FailurePopup = React.memo(({ taskName, onClose, isDarkMode }) => {
         className="relative bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transition-colors duration-200"
       >
         <div ref={contentRef} className="text-center">
-          <span className="text-black dark:text-white">TEST CONTENT VISIBLE?</span>
           <XCircle className="w-16 h-16 text-red-500 dark:text-red-400 mx-auto mb-4" />
           <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             Task Failed
