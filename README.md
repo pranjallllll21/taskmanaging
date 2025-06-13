@@ -1,12 +1,33 @@
-# React + Vite
+## 🛠️ **Implementation Details & Approach**
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+- I used **React** to build the app's structure with small, reusable components.
+- **Tailwind CSS** helped with quick and easy styling using utility classes.
+- **GSAP** was used to make animations like popup effects and task transitions smooth and cool.
+- The main logic for handling tasks (like adding, checking for duplicates) is inside **`TaskScheduler.js`**.
+- A custom hook **`useTaskScheduler.js`** handles the task state and makes the app organized and cleaner.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ⚠️ **Assumptions, Limitations & Edge Cases**
 
-## Expanding the ESLint configuration
+### ✅ **Assumptions**
+- Every task must have a **unique ID**.
+- Tasks are stored **only while the page is open** (no database yet).
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### ❌ **Limitations**
+- No login or authentication
+- Tasks disappear after refresh
+- No drag-and-drop features
+
+### ⚠️ **Edge Cases**
+- Adding a task with a **duplicate ID** shows an error popup.
+- If input is invalid (like an **empty name**), the task won't be added.
+
+---
+
+## 📦 **Dependencies (Tools I Used)**
+
+- **React** – building the app
+- **Tailwind CSS** – for fast styling
+- **GSAP** – for smooth animations
+- **Vite** – for fast development setup
